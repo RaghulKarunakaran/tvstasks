@@ -1,0 +1,45 @@
+<div class="row deal-share">
+  <div class="col-md-12">
+    <div class="card table-card">
+      <div class="card-header d-flex justify-content-between">
+        <span>
+          <h6 class="mb-0">Deal Share Opportunities</h6>
+        </span>
+      </div>
+      <div class="card-body">
+        <div class="d-flex row">
+          <div class="col-md-10 mb-3">
+            <fora-search-bar
+              [searchForm]="searchForm"
+              [isAdvanceSearch]="false"
+              [placeHolder]="placeHolder"
+              [advancedSearchForm]="advancedSearchForm"
+              (advancedSearch)="advancedSearch($event)"
+            >
+            </fora-search-bar>
+          </div>
+
+          <mat-checkbox
+            class="col-md-2 mb-3 align-self-center search-iso-checkbox"
+            (change)="toggleFavChkBx()"
+          >
+            Show Only Favorites
+          </mat-checkbox>
+          <!-- <mat-icon>star</mat-icon>
+                    <mat-icon>star_border</mat-icon> -->
+          <div class="col-md-12">
+            <fora-new-data-table
+              [dataTableConfig]="dataTableConfig"
+              [dynamicPaginationReinitiate]="
+                dynamicPaginationReinitiate.asObservable()
+              "
+              (dynamicPaginationCallBack)="dynamicPaginationCallBack($event)"
+              (actionCallBack)="actionCallBack($event)"
+            >
+            </fora-new-data-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

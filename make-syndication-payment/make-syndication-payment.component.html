@@ -1,0 +1,173 @@
+<div class="row make-syndication-payment">
+  <div class="col-md-12">
+    <div class="card report-table-card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="col-md-8 sbd-search-bar">
+          <fora-search-bar [searchForm]="searchForm" [isAdvanceSearch]="false" [advancedSearchForm]="advancedSearchForm"
+            (advancedSearch)="advancedSearch($event)" [placeHolder]="placeHolder"></fora-search-bar>
+        </div>
+        <span class="img-event">
+          <button (click)="downloadExcel('Copy the link')">
+            <img src="./../../../../../assets/svg/link.svg" alt="link" title="Copy the link" />
+          </button>
+        </span>
+        <div class="col-md-3">
+          <button class="p-2 status-btn">
+            {{ "check bank account statuses" }}
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row"> 
+          <div class="col-md-12 mb-3 ml-3 bt-filter">
+            <div class="row net-deferred">
+                <div class="col col-sm-12 flex-center">
+                    
+            
+                    <!-- date filter -->
+                    <ng-container *ngIf="!isCustomDateRage; else showCustomRage">
+                        <span class="pl-1">
+                            <button class="btn btn-sm nex-prev" mat-raised-button color="primary" (click)="dateFilter('-')">
+                                <img src="../../../../../../assets/svg/prev.svg" alt="prev" />
+                            </button>
+                        </span>
+                        <span class="sd-date p-1">{{dateRage}}</span>
+                        <span>
+                            <button class="btn btn-sm nex-prev" mat-raised-button color="primary" (click)="dateFilter('+')">
+                                <img src="../../../../../../assets/svg/next.svg" alt="prev" />
+                            </button>
+                        </span>
+                        <span class="date-filter pl-1 mat-select-container">
+                            <mat-select class="select-control" [(ngModel)]="selectedMonthFilter"
+                                (ngModelChange)="createFilterData($event,'selectedMonthFilter')"
+                                (selectionChange)="dateChangeEvent(selectedMonthFilter)">
+                                <mat-option [value]="listDateList?.id" *ngFor="let listDateList of dateFilterList">
+                                    {{listDateList?.name}}
+                                </mat-option>
+                            </mat-select>
+                        </span>
+                    </ng-container>
+            
+                    <ng-template #showCustomRage>
+                        <span class="flex-center center">
+                            <div class="form-group pl-1">
+                                <input class="form-control" mask="00/00/0000" type="text" (click)="openModal(fromContent)"
+                                    [(ngModel)]="fromDate" (input)="isFormDataValidationEvent(fromDate);openModal(fromContent)"
+                                    required="" readonly>
+                                <span class="floating-label">From</span>
+                            </div>
+                            <div class="form-group pl-1">
+                                <input class="form-control" mask="00/00/0000" type="text" (click)="openModal(toContent)"
+                                    [(ngModel)]="toDate" required="" readonly>
+                                <span class="floating-label">To</span>
+                            </div>
+                            <button class="done-btn ml-1" (click)="dateOkAndCancelEvent('done')" [disabled]="isFromDate">
+                                <img src="./../../../../../../../assets/svg/tick-green-100.svg" alt="tick">
+                            </button>
+                            <button class="close-btn ml-1" (click)="dateOkAndCancelEvent('close')">
+                                <img src="./../../../../../../../assets/svg/close-red.svg" alt="close">
+                            </button>
+                        </span>
+                    </ng-template>
+                    
+                    <!-- Show only summaries -->            
+                    <span class="check-box">
+                      <input  type="checkbox" name="" [(ngModel)]="summaries" (ngModelChange)="createFilterData($event,'begOfMonth')">
+                    </span>
+                    <span class="date-filter beg-of-month">Show only summaries (Hides Deals)</span>
+
+                    <!-- Generate NACHA Entries -->            
+                    <span class="check-box">
+                      <input  type="checkbox" name="" [(ngModel)]="entries" (ngModelChange)="createFilterData($event,'begOfMonth')">
+                    </span>
+                    <span class="date-filter beg-of-month">Generate NACHA Entries</span>
+
+                    <!-- Branded Company -->            
+                    <span class="word-no-wrap pl-4 pr-1">Branded Company</span>
+                    <div class="mat-select-container pr-4">
+                        <mat-select class="select-control" [(ngModel)]="brandedCompanyId"
+                            (ngModelChange)="createFilterData($event,'brandedCompanyId')">
+                            <mat-option [value]="''" >All</mat-option>
+                            <mat-option *ngFor="let listBS of balanceSheet" [value]="listBS.id">{{listBS?.brandCompAbbr}}
+                            </mat-option>
+                        </mat-select>
+                    </div>
+
+                    <!-- Split Method -->
+                    <span class="word-no-wrap pl-4 pr-1">Type</span>
+                    <span class="date-filter mat-select-container pr-4">
+                        <mat-select class="select-control" [(ngModel)]="selectedSplitMethod"
+                            (ngModelChange)="createFilterData($event,'selectedSplitMethod')">
+                            <mat-option [value]="listSplit.id" *ngFor="let listSplit of splitMethodInfo">{{listSplit?.name}}
+                            </mat-option>
+                        </mat-select>
+                    </span>
+            
+                    
+            
+                    <!-- <span class="img-event ml-3">
+                        <button (click)="DownloadExcel('Copy the link')">
+                            <img src="./../../../../../assets/svg/link.svg" alt="link" title="Copy the link">
+                        </button>
+                        <button (click)="DownloadExcel('Download')" class="ml-1">
+                            <img src="./../../../../../assets/svg/extension/xlsx.svg" alt="link" title="Download">
+                        </button>
+                        <button color="default" class="custom-referring-btn default-bg filter-btn ml-4" (click)="OpenBt()">
+                            <mat-icon class="color-grey">filter_list</mat-icon>
+                            <span class="position-absolute top-0 start-100 translate-middle isAvilableFilter"
+                                >
+                            </span>
+                        </button>
+                    </span> -->
+                    
+            
+                </div>
+            </div>
+            
+            
+            <!-- From Date -->
+            <ng-template #fromContent let-modal>
+                <div class="modal-body d-flex">
+                    <div class="open-datepicker">
+                        <ngb-datepicker [maxDate]="maxDateRage" #d (dateSelect)="onDateSelect()"
+                            [(ngModel)]="ngbDate.dateRageFromDate" [startDate]="ngbDate.dateRageFromDate">
+                        </ngb-datepicker>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary mr-3" type="submit" (click)="modal.close('Close click')">Cancel</button>
+                    <button class="btn btn-primary" type="submit"
+                        (click)="modal.close('Close click');onDateClick('from')">Ok</button>
+                </div>
+            </ng-template>
+            <!-- To Date -->
+            <ng-template #toContent let-modal>
+                <div class="modal-body d-flex">
+                    <div class="open-datepicker">
+                        <ngb-datepicker [maxDate]="maxDateRage" #d (dateSelect)="onDateSelect()"
+                            [(ngModel)]="ngbDate.dateRageToDate" [startDate]="ngbDate.dateRageToDate">
+                        </ngb-datepicker>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary mr-3" type="submit" (click)="modal.close('Close click')">Cancel</button>
+                    <button class="btn btn-primary" type="submit" (click)="modal.close('Close click');onDateClick('to')">Ok</button>
+                </div>
+            </ng-template>
+        </div>
+        <div class="col-md-12">
+
+            <!-- <fora-accounting-report-table class="net-defer-custom"
+                [accountReportTableConfig]="dataTableConfig"></fora-accounting-report-table> -->
+                <!-- <fora-data-table [dataTableConfig]="dataTableConfig"
+                [callBackPagination]="callBackPagination.asObservable()"
+                (callBackPaginateUnderWrittingDeals)="callBackPaginateUnderWrittingDeals($event)"
+                (rowClick)="handleNavigation($event)"
+                >
+            </fora-data-table> -->
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+@import '../../../../theme/utils/scss/variables.scss';
+@import '../../../../theme/utils/scss/color.scss';
+
+.deal-share {
+
+    .table-card {
+
+        .card-header {
+            background-color: var(--fora-white);
+
+            h6 {
+                font-weight: var(--fora-font-weight-600);
+                color: var(--fora-primary-btn);
+            }
+        }
+    }
+
+}
